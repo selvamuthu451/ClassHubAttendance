@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="UTF-8">
+    <title>ClassHub Dashboard</title>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+
+            font-family:Arial,sans-serif;
+            background:#f4f6f9;
+            padding:30px;
+
+        }
+
+        .container{
+
+            width:950px;
+            margin:auto;
+
+        }
+
+        h1{
+
+            color:#2c3e50;
+
+        }
+
+        h3{
+
+            color:#666;
+            margin-bottom:20px;
+
+        }
+
+        .card{
+
+            background:white;
+            border-radius:10px;
+            padding:20px;
+            margin-bottom:20px;
+            box-shadow:0 0 10px rgba(0,0,0,.15);
+
+        }
+
+        .status-open{
+
+            color:green;
+            font-weight:bold;
+
+        }
+
+        .status-closed{
+
+            color:red;
+            font-weight:bold;
+
+        }
+
+        .countdown{
+
+            text-align:center;
+            font-size:42px;
+            font-weight:bold;
+            color:#dc3545;
+
+        }
+
+        .security{
+
+            background:#fff8e1;
+            border-left:6px solid orange;
+
+        }
+
+        table{
+
+            width:100%;
+            border-collapse:collapse;
+
+        }
+
+        table th,
+        table td{
+
+            padding:10px;
+            border-bottom:1px solid #ddd;
+            text-align:left;
+
+        }
+
+        table th{
+
+            background:#f1f1f1;
+
+        }
+
+        .buttons{
+
+            margin-top:20px;
+
+        }
+
+        .buttons a,
+        .buttons button{
+
+            text-decoration:none;
+            color:white;
+            padding:12px 18px;
+            border:none;
+            border-radius:6px;
+            margin-right:10px;
+            display:inline-block;
+            font-weight:bold;
+            cursor:pointer;
+
+        }
+
+        .start{
+
+            background:#28a745;
+
+        }
+
+        .end{
+
+            background:#dc3545;
+
+        }
+
+        .history{
+
+            background:#007bff;
+
+        }
+
+        .download{
+
+            background:#ff9800;
+
+        }
+
+        .logout{
+
+            background:#6c757d;
+
+        }
+
+        button:disabled{
+
+            opacity:.5;
+            cursor:not-allowed;
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Welcome {{ name }}</h1>
+
+<h3>Class Representative</h3>
+
+<div class="card">
+
+<h2>Today's Attendance</h2>
+
+<p>
+
+<b>Status :</b>
+
+<span
+id="status"
+class="status-open">
+
+Loading...
+
+</span>
+
+</p>
+
+<p>
+
+<b>Subject :</b>
+
+<span id="subject">
+
+-
+
+</span>
+
+</p>
+
+<p>
+
+<b>Period :</b>
+
+<span id="period">
+
+-
+
+</span>
+
+</p>
+
+<p>
+
+<b>Attendance Code :</b>
+
+<span id="code">
+
+-
+
+</span>
+
+</p>
+
+<p>
+
+<b>Present :</b>
+
+<span id="present">
+
+0
+
+</span>
+
+/
+
+<span id="total">
+
+0
+
+</span>
+
+</p>
+
+<p>
+
+<b>Absent :</b>
+
+<span id="absent">
+
+0
+
+</span>
+
+</p>
+
+</div>
+
+<div class="card">
+
+<h2>⏳ Time Remaining</h2>
+
+<div
+class="countdown"
+id="countdown">
+
+00:00
+
+</div>
+
+</div>
+
+<div class="card security">
+
+<h2>
+
+🛡 Security Monitor
+
+</h2>
+
+<p id="securityStatus">
+
+Checking attendance...
+
+</p>
+
+</div>
+
+<div class="card">
+
+<h2>📋 Recent Attendance</h2>
+
+<p id="noAttendance">
+
+No student has submitted attendance yet.
+
+</p>
+
+<table
+id="attendanceTable"
+style="display:none;">
+
+<thead>
+
+<tr>
+
+<th>Student</th>
+
+<th>Time</th>
+
+<th>IP Address</th>
+
+</tr>
+
+</thead>
+
+<tbody id="recentTable">
+
+</tbody>
+
+</table>
+
+</div>
+
+<div class="buttons">
+
+<a
+href="/start"
+class="start"
+id="startButton">
+
+Start Attendance
+
+</a>
+
+<button
+class="end"
+id="endButton">
+
+End Attendance
+
+</button>
+
+<a
+href="/history"
+class="history">
+
+Session History
+
+</a>
+
+<a
+href="/download_absentees"
+class="download">
+
+Download Absentees
+
+</a>
+
+<a
+href="/"
+class="logout">
+
+Logout
+
+</a>
+
+</div>
+
+</div>
+
+<script>
+// ===============================
+// Global Variables
+// ===============================
+
+let endTime = null;
+let attendanceClosed = false;
+
+
+// ===============================
+// Dashboard Loader
+// ===============================
+
+function loadDashboard(){
+
+    fetch("/dashboard_data")
+    .then(response => response.json())
+    .then(data => {
+
+        if(!data.active){
+
+            updateClosedUI();
+            return;
+
+        }
+
+        updateOpenUI(data);
+
+    });
+
+}
+
+
+// ===============================
+// OPEN Attendance UI
+// ===============================
+
+function updateOpenUI(data){
+
+    attendanceClosed = false;
+
+    document.getElementById("status").innerHTML = "🟢 OPEN";
+    document.getElementById("status").className = "status-open";
+
+    document.getElementById("subject").innerHTML = data.subject;
+    document.getElementById("period").innerHTML = data.period;
+    document.getElementById("code").innerHTML = data.code;
+
+    document.getElementById("present").innerHTML = data.present;
+    document.getElementById("absent").innerHTML = data.absent;
+    document.getElementById("total").innerHTML = data.total;
+
+    endTime = new Date(data.end_time);
+
+    document.getElementById("startButton").style.pointerEvents = "none";
+    document.getElementById("startButton").style.opacity = "0.5";
+
+    document.getElementById("endButton").disabled = false;
+    document.getElementById("endButton").style.opacity = "1";
+
+    let security = "";
+
+if(data.suspicious.length > 0){
+
+    data.suspicious.forEach(function(item){
+
+        security += `
+        <div style="margin-bottom:10px;">
+            ⚠️ <b>Suspicious Activity Detected</b><br>
+            <b>IP:</b> ${item[0]}<br>
+            <b>Students:</b> ${item[2]}<br>
+            <b>Total:</b> ${item[1]}
+        </div>
+        <hr>
+        `;
+
+    });
+
+}
+else{
+
+    security = "✅ No suspicious activity detected.";
+
+}
+
+document.getElementById("securityStatus").innerHTML = security;
+
+    let rows = "";
+
+    data.recent.forEach(function(student){
+
+        rows += `
+        <tr>
+            <td>${student[0]}</td>
+            <td>${student[1]}</td>
+            <td>${student[2]}</td>
+        </tr>
+        `;
+
+    });
+
+    document.getElementById("recentTable").innerHTML = rows;
+
+    if(data.recent.length > 0){
+
+        document.getElementById("attendanceTable").style.display = "table";
+        document.getElementById("noAttendance").style.display = "none";
+
+    }
+    else{
+
+        document.getElementById("attendanceTable").style.display = "none";
+        document.getElementById("noAttendance").style.display = "block";
+
+    }
+
+}
+
+
+// ===============================
+// CLOSED Attendance UI
+// ===============================
+
+function updateClosedUI(){
+
+    attendanceClosed = true;
+    endTime = null;
+
+    document.getElementById("status").innerHTML = "🔴 CLOSED";
+    document.getElementById("status").className = "status-closed";
+
+    document.getElementById("countdown").innerHTML = "00:00";
+
+    document.getElementById("securityStatus").innerHTML =
+        "Attendance session has been closed.";
+
+    document.getElementById("startButton").style.pointerEvents = "auto";
+    document.getElementById("startButton").style.opacity = "1";
+
+    document.getElementById("endButton").disabled = true;
+    document.getElementById("endButton").style.opacity = "0.5";
+
+}
+// ===============================
+// Countdown Timer
+// ===============================
+
+function updateCountdown(){
+
+    if(attendanceClosed){
+
+        document.getElementById("countdown").innerHTML = "00:00";
+        return;
+
+    }
+
+    if(endTime == null)
+        return;
+
+    let now = new Date();
+
+    let diff = endTime - now;
+
+    if(diff <= 0){
+
+        document.getElementById("countdown").innerHTML = "00:00";
+
+        attendanceClosed = true;
+
+        fetch("/close_attendance")
+        .then(response => response.json())
+        .then(function(){
+
+            updateClosedUI();
+            loadDashboard();
+
+        });
+
+        return;
+
+    }
+
+    let minutes = Math.floor(diff / 60000);
+    let seconds = Math.floor((diff % 60000) / 1000);
+
+    document.getElementById("countdown").innerHTML =
+        String(minutes).padStart(2,"0")
+        + ":"
+        + String(seconds).padStart(2,"0");
+
+}
+
+
+// ===============================
+// End Attendance Button
+// ===============================
+
+document.getElementById("endButton").addEventListener("click", function(e){
+
+    e.preventDefault();
+
+    if(attendanceClosed)
+        return;
+
+    fetch("/close_attendance")
+    .then(response => response.json())
+    .then(function(){
+
+        updateClosedUI();
+        loadDashboard();
+
+    });
+
+});
+
+
+// ===============================
+// Initial Load
+// ===============================
+
+loadDashboard();
+
+
+// Refresh dashboard every 5 seconds
+
+setInterval(loadDashboard,5000);
+
+
+// Refresh timer every second
+
+setInterval(updateCountdown,1000);
+
+</script>
+
+</body>
+
+</html>

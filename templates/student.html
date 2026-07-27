@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Student Attendance</title>
+</head>
+
+<body>
+
+<h1>Student Attendance</h1>
+
+<form method="POST">
+
+<label>Register Number</label><br>
+<input type="text" name="register_number" required>
+
+<br><br>
+
+<label>Attendance Code</label><br>
+<input type="text" name="attendance_code" required>
+
+<br><br>
+
+<input type="submit" value="Submit Attendance">
+
+</form>
+
+{% if message %}
+<h3>{{ message }}</h3>
+{% endif %}
+
+</body>
+
+</html>

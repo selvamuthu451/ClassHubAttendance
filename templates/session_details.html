@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Session Details</title>
+
+<style>
+
+body{
+    font-family:Arial,sans-serif;
+    background:#f4f6f9;
+    margin:0;
+    padding:30px;
+}
+
+.container{
+    width:1200px;
+    margin:auto;
+}
+
+h1{
+    color:#2c3e50;
+}
+
+.card{
+
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    margin-bottom:20px;
+    box-shadow:0 0 10px rgba(0,0,0,.15);
+
+}
+
+.summary{
+
+    display:flex;
+    justify-content:space-between;
+    gap:20px;
+
+}
+
+.box{
+
+    flex:1;
+    color:white;
+    text-align:center;
+    border-radius:10px;
+    padding:20px;
+
+}
+
+.total{
+
+    background:#007bff;
+
+}
+
+.present{
+
+    background:#28a745;
+
+}
+
+.absent{
+
+    background:#dc3545;
+
+}
+
+table{
+
+    width:100%;
+    border-collapse:collapse;
+
+}
+
+th{
+
+    background:#007bff;
+    color:white;
+
+}
+
+th,td{
+
+    border:1px solid #ddd;
+    padding:10px;
+    text-align:center;
+
+}
+
+input{
+
+    width:300px;
+    padding:10px;
+    margin-bottom:20px;
+    font-size:16px;
+
+}
+
+.back{
+
+    display:inline-block;
+    margin-top:20px;
+    padding:12px 20px;
+    color:white;
+    background:#6c757d;
+    text-decoration:none;
+    border-radius:6px;
+
+}
+
+.download{
+
+    display:inline-block;
+    margin-top:20px;
+    margin-left:10px;
+    padding:12px 20px;
+    color:white;
+    background:#ff9800;
+    text-decoration:none;
+    border-radius:6px;
+
+}
+
+.security{
+
+    background:#fff8e1;
+    border-left:6px solid orange;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Attendance Session Details</h1>
+
+<div class="card">
+
+<h2>{{ session[0] }}</h2>
+
+<p><b>Period :</b> {{ session[1] }}</p>
+
+<p><b>Date :</b> {{ session[2] }}</p>
+
+<p><b>Start :</b> {{ session[3] }}</p>
+
+<p><b>End :</b> {{ session[4] }}</p>
+
+<p><b>Status :</b> {{ session[5] }}</p>
+
+</div>
+
+<div class="summary">
+
+<div class="box total">
+
+<h2>Total Students</h2>
+
+<h1>{{ total }}</h1>
+
+</div>
+
+<div class="box present">
+
+<h2>Present</h2>
+
+<h1>{{ present }}</h1>
+
+</div>
+
+<div class="box absent">
+
+<h2>Absent</h2>
+
+<h1>{{ absent }}</h1>
+
+</div>
+
+</div>
+
+<div class="card security">
+
+<h2>🛡 Security Monitor</h2>
+
+{% if suspicious_ips %}
+
+<table>
+
+<tr>
+
+<th>IP Address</th>
+
+<th>Students</th>
+
+<th>Total</th>
+
+<th>Status</th>
+
+</tr>
+
+{% for item in suspicious_ips %}
+
+<tr>
+
+<td>{{ item[0] }}</td>
+
+<td>{{ item[2] }}</td>
+
+<td>{{ item[1] }}</td>
+
+<td style="color:orange;font-weight:bold;">
+
+⚠ Needs Verification
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+{% else %}
+
+<p style="color:green;font-weight:bold;">
+
+✅ No suspicious activity detected.
+
+</p>
+
+{% endif %}
+<ul>
+
+<li>Same IP Address</li>
+
+<li>Same Browser</li>
+
+<li>Multiple submissions from same network</li>
+
+<li>Needs Verification</li>
+
+</ul>
+
+</div>
+
+<div class="card">
+
+<h2>🟢 Present Students</h2>
+
+<input
+type="text"
+id="search"
+placeholder="Search Register No or Name..."
+onkeyup="searchStudent()">
+
+<table id="presentTable">
+
+<tr>
+
+<th>Register No</th>
+
+<th>Name</th>
+
+<th>Time</th>
+
+<th>IP Address</th>
+
+</tr>
+
+{% for student in present_students %}
+
+<tr>
+
+<td>{{ student[0] }}</td>
+
+<td>{{ student[1] }}</td>
+
+<td>{{ student[2] }}</td>
+
+<td>{{ student[3] }}</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+
+<div class="card">
+
+<h2>❌ Absent Students</h2>
+
+<table>
+
+<tr>
+
+<th>Register No</th>
+
+<th>Name</th>
+
+</tr>
+
+{% for student in absent_students %}
+
+<tr>
+
+<td>{{ student[0] }}</td>
+
+<td>{{ student[1] }}</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+
+<a href="/history" class="back">
+
+← Back
+
+</a>
+
+<a href="/download/{{ session_id }}" class="download">
+
+📥 Download Excel
+
+</a>
+
+</div>
+
+<script>
+
+function searchStudent(){
+
+let input=document.getElementById("search");
+
+let filter=input.value.toUpperCase();
+
+let table=document.getElementById("presentTable");
+
+let tr=table.getElementsByTagName("tr");
+
+for(let i=1;i<tr.length;i++){
+
+let td1=tr[i].getElementsByTagName("td")[0];
+
+let td2=tr[i].getElementsByTagName("td")[1];
+
+if(td1||td2){
+
+let txt=(td1.innerHTML+" "+td2.innerHTML).toUpperCase();
+
+if(txt.indexOf(filter)>-1)
+
+tr[i].style.display="";
+
+else
+
+tr[i].style.display="none";
+
+}
+
+}
+
+}
+
+</script>
+
+</body>
+
+</html>
