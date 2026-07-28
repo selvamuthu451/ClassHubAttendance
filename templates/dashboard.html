@@ -3,166 +3,127 @@
 
 <head>
 
-    <meta charset="UTF-8">
-    <title>ClassHub Dashboard</title>
+<meta charset="UTF-8">
+<title>ClassHub Dashboard</title>
 
-    <style>
+<style>
 
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-        }
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
 
-        body{
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f4f6f9;
+    padding:30px;
+}
 
-            font-family:Arial,sans-serif;
-            background:#f4f6f9;
-            padding:30px;
+.container{
+    width:950px;
+    margin:auto;
+}
 
-        }
+.card{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    margin-bottom:20px;
+    box-shadow:0 2px 10px rgba(0,0,0,.15);
+}
 
-        .container{
+h1{
+    color:#2c3e50;
+}
 
-            width:950px;
-            margin:auto;
+h3{
+    color:#777;
+    margin-bottom:20px;
+}
 
-        }
+.status-open{
+    color:green;
+    font-weight:bold;
+}
 
-        h1{
+.status-closed{
+    color:red;
+    font-weight:bold;
+}
 
-            color:#2c3e50;
+.countdown{
+    font-size:48px;
+    text-align:center;
+    color:#dc3545;
+    font-weight:bold;
+}
 
-        }
+.security{
+    background:#fff8e1;
+    border-left:6px solid orange;
+}
 
-        h3{
+table{
+    width:100%;
+    border-collapse:collapse;
+}
 
-            color:#666;
-            margin-bottom:20px;
+table th,
+table td{
+    padding:10px;
+    border-bottom:1px solid #ddd;
+}
 
-        }
+table th{
+    background:#f1f1f1;
+}
 
-        .card{
+.buttons{
+    margin-top:20px;
+}
 
-            background:white;
-            border-radius:10px;
-            padding:20px;
-            margin-bottom:20px;
-            box-shadow:0 0 10px rgba(0,0,0,.15);
+.buttons a,
+.buttons button{
 
-        }
+    text-decoration:none;
+    color:white;
+    padding:12px 18px;
+    border:none;
+    border-radius:6px;
+    margin-right:10px;
+    cursor:pointer;
+    display:inline-block;
+    font-weight:bold;
 
-        .status-open{
+}
 
-            color:green;
-            font-weight:bold;
+.start{
+    background:#28a745;
+}
 
-        }
+.end{
+    background:#dc3545;
+}
 
-        .status-closed{
+.history{
+    background:#007bff;
+}
 
-            color:red;
-            font-weight:bold;
+.download{
+    background:#ff9800;
+}
 
-        }
+.logout{
+    background:#6c757d;
+}
 
-        .countdown{
+button:disabled{
+    opacity:.5;
+    cursor:not-allowed;
+}
 
-            text-align:center;
-            font-size:42px;
-            font-weight:bold;
-            color:#dc3545;
-
-        }
-
-        .security{
-
-            background:#fff8e1;
-            border-left:6px solid orange;
-
-        }
-
-        table{
-
-            width:100%;
-            border-collapse:collapse;
-
-        }
-
-        table th,
-        table td{
-
-            padding:10px;
-            border-bottom:1px solid #ddd;
-            text-align:left;
-
-        }
-
-        table th{
-
-            background:#f1f1f1;
-
-        }
-
-        .buttons{
-
-            margin-top:20px;
-
-        }
-
-        .buttons a,
-        .buttons button{
-
-            text-decoration:none;
-            color:white;
-            padding:12px 18px;
-            border:none;
-            border-radius:6px;
-            margin-right:10px;
-            display:inline-block;
-            font-weight:bold;
-            cursor:pointer;
-
-        }
-
-        .start{
-
-            background:#28a745;
-
-        }
-
-        .end{
-
-            background:#dc3545;
-
-        }
-
-        .history{
-
-            background:#007bff;
-
-        }
-
-        .download{
-
-            background:#ff9800;
-
-        }
-
-        .logout{
-
-            background:#6c757d;
-
-        }
-
-        button:disabled{
-
-            opacity:.5;
-            cursor:not-allowed;
-
-        }
-
-    </style>
+</style>
 
 </head>
 
@@ -171,92 +132,54 @@
 <div class="container">
 
 <h1>Welcome {{ name }}</h1>
-
 <h3>Class Representative</h3>
 
 <div class="card">
 
 <h2>Today's Attendance</h2>
 
-<p>
-
-<b>Status :</b>
-
-<span
-id="status"
-class="status-open">
-
-Loading...
-
-</span>
-
+<p><b>Status :</b>
+<span id="status" class="status-closed">Loading...</span>
 </p>
 
-<p>
+<br>
 
-<b>Subject :</b>
-
-<span id="subject">
-
--
-
-</span>
-
+<p><b>Subject :</b>
+<span id="subject">-</span>
 </p>
 
-<p>
+<br>
 
-<b>Period :</b>
-
-<span id="period">
-
--
-
-</span>
-
+<p><b>Period :</b>
+<span id="period">-</span>
 </p>
 
-<p>
+<br>
 
-<b>Attendance Code :</b>
-
-<span id="code">
-
--
-
-</span>
-
+<p><b>Attendance Code :</b>
+<span id="code">-</span>
 </p>
 
-<p>
+<br>
 
+<p>
 <b>Present :</b>
 
-<span id="present">
-
-0
-
-</span>
+<span id="present">0</span>
 
 /
 
-<span id="total">
-
-0
-
-</span>
+<span id="total">0</span>
 
 </p>
+
+<br>
 
 <p>
 
 <b>Absent :</b>
 
-<span id="absent">
-
-0
-
-</span>
+<span id="absent">0</span>
 
 </p>
 
@@ -267,8 +190,8 @@ Loading...
 <h2>⏳ Time Remaining</h2>
 
 <div
-class="countdown"
-id="countdown">
+id="countdown"
+class="countdown">
 
 00:00
 
@@ -278,27 +201,23 @@ id="countdown">
 
 <div class="card security">
 
-<h2>
+<h2>🛡 Security Monitor</h2>
 
-🛡 Security Monitor
+<div id="securityStatus">
 
-</h2>
+Checking...
 
-<p id="securityStatus">
-
-Checking attendance...
-
-</p>
+</div>
 
 </div>
 
 <div class="card">
 
-<h2>📋 Recent Attendance</h2>
+<h2>Recent Attendance</h2>
 
 <p id="noAttendance">
 
-No student has submitted attendance yet.
+No attendance submitted.
 
 </p>
 
@@ -376,17 +295,17 @@ Logout
 </div>
 
 <script>
-// ===============================
+
+//==============================
 // Global Variables
-// ===============================
+//==============================
 
-let endTime = null;
-let attendanceClosed = false;
+let attendanceClosed = true;
+let endTimeUTC = null; // Store the exact UTC end time string from the server
 
-
-// ===============================
-// Dashboard Loader
-// ===============================
+//==============================
+// Load Dashboard
+//==============================
 
 function loadDashboard(){
 
@@ -395,10 +314,8 @@ function loadDashboard(){
     .then(data => {
 
         if(!data.active){
-
             updateClosedUI();
             return;
-
         }
 
         updateOpenUI(data);
@@ -407,14 +324,16 @@ function loadDashboard(){
 
 }
 
-
-// ===============================
+//==============================
 // OPEN Attendance UI
-// ===============================
+//==============================
 
 function updateOpenUI(data){
 
     attendanceClosed = false;
+    
+    // Store the exact ISO string instead of raw seconds
+    endTimeUTC = data.end_time_iso; 
 
     document.getElementById("status").innerHTML = "🟢 OPEN";
     document.getElementById("status").className = "status-open";
@@ -427,40 +346,40 @@ function updateOpenUI(data){
     document.getElementById("absent").innerHTML = data.absent;
     document.getElementById("total").innerHTML = data.total;
 
-    endTime = new Date(data.end_time);
-
     document.getElementById("startButton").style.pointerEvents = "none";
     document.getElementById("startButton").style.opacity = "0.5";
 
     document.getElementById("endButton").disabled = false;
     document.getElementById("endButton").style.opacity = "1";
 
+    // Security Monitor
+
     let security = "";
 
-if(data.suspicious.length > 0){
+    if(data.suspicious.length > 0){
 
-    data.suspicious.forEach(function(item){
+        data.suspicious.forEach(function(item){
 
-        security += `
-        <div style="margin-bottom:10px;">
-            ⚠️ <b>Suspicious Activity Detected</b><br>
-            <b>IP:</b> ${item[0]}<br>
-            <b>Students:</b> ${item[2]}<br>
-            <b>Total:</b> ${item[1]}
-        </div>
-        <hr>
-        `;
+            security += `
+            <div style="margin-bottom:10px;">
+                ⚠️ <b>Suspicious Activity Detected</b><br>
+                <b>IP :</b> ${item[0]}<br>
+                <b>Students :</b> ${item[2]}<br>
+                <b>Total :</b> ${item[1]}
+            </div>
+            <hr>
+            `;
 
-    });
+        });
 
-}
-else{
+    }
+    else{
+        security = "✅ No suspicious activity detected.";
+    }
 
-    security = "✅ No suspicious activity detected.";
+    document.getElementById("securityStatus").innerHTML = security;
 
-}
-
-document.getElementById("securityStatus").innerHTML = security;
+    // Recent Attendance
 
     let rows = "";
 
@@ -479,37 +398,43 @@ document.getElementById("securityStatus").innerHTML = security;
     document.getElementById("recentTable").innerHTML = rows;
 
     if(data.recent.length > 0){
-
         document.getElementById("attendanceTable").style.display = "table";
         document.getElementById("noAttendance").style.display = "none";
-
     }
     else{
-
         document.getElementById("attendanceTable").style.display = "none";
         document.getElementById("noAttendance").style.display = "block";
-
     }
 
 }
 
-
-// ===============================
+//==============================
 // CLOSED Attendance UI
-// ===============================
+//==============================
 
 function updateClosedUI(){
 
     attendanceClosed = true;
-    endTime = null;
+    endTimeUTC = null;
 
     document.getElementById("status").innerHTML = "🔴 CLOSED";
     document.getElementById("status").className = "status-closed";
+
+    document.getElementById("subject").innerHTML = "-";
+    document.getElementById("period").innerHTML = "-";
+    document.getElementById("code").innerHTML = "-";
+
+    document.getElementById("present").innerHTML = "0";
+    document.getElementById("absent").innerHTML = "0";
+    document.getElementById("total").innerHTML = "0";
 
     document.getElementById("countdown").innerHTML = "00:00";
 
     document.getElementById("securityStatus").innerHTML =
         "Attendance session has been closed.";
+
+    document.getElementById("attendanceTable").style.display = "none";
+    document.getElementById("noAttendance").style.display = "block";
 
     document.getElementById("startButton").style.pointerEvents = "auto";
     document.getElementById("startButton").style.opacity = "1";
@@ -518,59 +443,56 @@ function updateClosedUI(){
     document.getElementById("endButton").style.opacity = "0.5";
 
 }
-// ===============================
-// Countdown Timer
-// ===============================
+
+//==============================
+// Countdown Timer (Timezone Aware)
+//==============================
 
 function updateCountdown(){
 
-    if(attendanceClosed){
-
+    if(attendanceClosed || !endTimeUTC){
         document.getElementById("countdown").innerHTML = "00:00";
         return;
-
     }
 
-    if(endTime == null)
-        return;
+    // Get the local browser time
+    let now = new Date().getTime();
+    
+    // Parse the server's UTC time (JavaScript automatically converts this to your local timezone)
+    let targetTime = new Date(endTimeUTC).getTime();
+    
+    // Calculate difference in milliseconds
+    let distance = targetTime - now;
 
-    let now = new Date();
-
-    let diff = endTime - now;
-
-    if(diff <= 0){
-
+    if(distance <= 0){
         document.getElementById("countdown").innerHTML = "00:00";
-
         attendanceClosed = true;
 
         fetch("/close_attendance")
         .then(response => response.json())
         .then(function(){
-
             updateClosedUI();
             loadDashboard();
-
         });
 
         return;
-
     }
 
-    let minutes = Math.floor(diff / 60000);
-    let seconds = Math.floor((diff % 60000) / 1000);
+    // Calculate minutes and seconds
+    let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    let seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
+    // Format display
     document.getElementById("countdown").innerHTML =
         String(minutes).padStart(2,"0")
         + ":"
         + String(seconds).padStart(2,"0");
-
 }
 
 
-// ===============================
+//==============================
 // End Attendance Button
-// ===============================
+//==============================
 
 document.getElementById("endButton").addEventListener("click", function(e){
 
@@ -582,33 +504,32 @@ document.getElementById("endButton").addEventListener("click", function(e){
     fetch("/close_attendance")
     .then(response => response.json())
     .then(function(){
-
         updateClosedUI();
         loadDashboard();
-
     });
 
 });
 
 
-// ===============================
+//==============================
 // Initial Load
-// ===============================
+//==============================
 
 loadDashboard();
 
 
 // Refresh dashboard every 5 seconds
+setInterval(function(){
+    loadDashboard();
+}, 5000);
 
-setInterval(loadDashboard,5000);
 
-
-// Refresh timer every second
-
-setInterval(updateCountdown,1000);
+// Countdown every second
+setInterval(function(){
+    updateCountdown();
+}, 1000);
 
 </script>
 
 </body>
-
 </html>
