@@ -1,27 +1,177 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>ClassHub Attendance</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClassHub - Anywhere Door</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial Rounded MT Bold', 'Comic Sans MS', Arial, sans-serif;
+            background: linear-gradient(135deg, #00A0E9 0%, #66c7f4 100%); /* Doraemon Blue */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            text-align: center;
+            border-top: 12px solid #E3001B; /* Collar Red */
+            position: relative;
+        }
+
+        /* CSS Drawn Doraemon Bell */
+        .bell {
+            width: 45px;
+            height: 45px;
+            background: #FFD900; /* Bell Yellow */
+            border-radius: 50%;
+            border: 2px solid #333;
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .bell::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 3px;
+            background: #333;
+            top: 12px;
+            left: 0;
+        }
+        .bell::after {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #333;
+            border-radius: 50%;
+            top: 22px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .bell-line {
+            position: absolute;
+            width: 3px;
+            height: 12px;
+            background: #333;
+            top: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .card h1 {
+            color: #00A0E9;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #00A0E9;
+            box-shadow: 0 0 8px rgba(0, 160, 233, 0.3);
+        }
+
+        .submit-btn {
+            background: #00A0E9;
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            font-size: 18px;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: background 0.3s, transform 0.1s;
+            box-shadow: 0 4px 6px rgba(0, 160, 233, 0.3);
+        }
+
+        .submit-btn:hover {
+            background: #0088c7;
+        }
+        
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        .error-msg {
+            color: #E3001B;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+    </style>
 </head>
 <body>
 
-<h1>ClassHub Attendance</h1>
+    <div class="container">
+        <div class="card">
+            <!-- Decorative Bell -->
+            <div class="bell">
+                <div class="bell-line"></div>
+            </div>
 
-<form method="POST">
+            <h1>Anywhere Door</h1>
+            
+            <form method="POST">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" name="username" placeholder="Enter admin username" required>
+                </div>
 
-<label>Username</label><br>
-<input type="text" name="username" required><br><br>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" name="password" placeholder="Enter password" required>
+                </div>
 
-<label>Password</label><br>
-<input type="password" name="password" required><br><br>
+                <input type="submit" value="Unlock" class="submit-btn">
+            </form>
 
-<input type="submit" value="Login">
-
-</form>
-
-{% if error %}
-<p style="color:red;">{{ error }}</p>
-{% endif %}
+            {% if error %}
+                <p class="error-msg">{{ error }}</p>
+            {% endif %}
+        </div>
+    </div>
 
 </body>
 </html>

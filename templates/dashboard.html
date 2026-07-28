@@ -1,338 +1,324 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClassHub Dashboard</title>
 
-<meta charset="UTF-8">
-<title>ClassHub Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<style>
+        body {
+            /* Doraemon Blue Gradient */
+            background: linear-gradient(135deg, #00A0E9 0%, #66c7f4 100%);
+            font-family: 'Arial Rounded MT Bold', 'Comic Sans MS', Arial, sans-serif;
+            padding: 30px;
+            color: #333;
+            min-height: 100vh;
+        }
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
+        .container {
+            width: 950px;
+            margin: auto;
+        }
 
-body{
-    font-family:Arial,Helvetica,sans-serif;
-    background:#f4f6f9;
-    padding:30px;
-}
+        /* Header Styling */
+        .header-title {
+            color: white;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            margin-bottom: 5px;
+            font-size: 36px;
+        }
 
-.container{
-    width:950px;
-    margin:auto;
-}
+        .header-subtitle {
+            color: #FFD900; /* Bell Yellow */
+            text-align: center;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            margin-bottom: 30px;
+            font-size: 18px;
+        }
 
-.card{
-    background:white;
-    padding:20px;
-    border-radius:10px;
-    margin-bottom:20px;
-    box-shadow:0 2px 10px rgba(0,0,0,.15);
-}
+        /* Card Styling */
+        .card {
+            background: white;
+            padding: 25px 30px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            /* Doraemon Collar Red Border */
+            border-top: 12px solid #E3001B;
+            position: relative;
+        }
 
-h1{
-    color:#2c3e50;
-}
+        /* Only the first card gets the bell */
+        .first-card {
+            margin-top: 40px; 
+        }
 
-h3{
-    color:#777;
-    margin-bottom:20px;
-}
+        /* CSS Drawn Doraemon Bell */
+        .bell {
+            width: 45px;
+            height: 45px;
+            background: #FFD900;
+            border-radius: 50%;
+            border: 2px solid #333;
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .bell::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 3px;
+            background: #333;
+            top: 12px;
+            left: 0;
+        }
+        .bell::after {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #333;
+            border-radius: 50%;
+            top: 22px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .bell-line {
+            position: absolute;
+            width: 3px;
+            height: 12px;
+            background: #333;
+            top: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
 
-.status-open{
-    color:green;
-    font-weight:bold;
-}
+        .card h2 {
+            color: #00A0E9;
+            margin-bottom: 20px;
+            border-bottom: 2px dashed #66c7f4;
+            padding-bottom: 10px;
+        }
 
-.status-closed{
-    color:red;
-    font-weight:bold;
-}
+        /* Status Texts */
+        .status-open {
+            color: #28a745;
+            font-weight: bold;
+            background: #d4edda;
+            padding: 5px 10px;
+            border-radius: 8px;
+        }
 
-.countdown{
-    font-size:48px;
-    text-align:center;
-    color:#dc3545;
-    font-weight:bold;
-}
+        .status-closed {
+            color: #E3001B;
+            font-weight: bold;
+            background: #f8d7da;
+            padding: 5px 10px;
+            border-radius: 8px;
+        }
 
-.security{
-    background:#fff8e1;
-    border-left:6px solid orange;
-}
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            font-size: 16px;
+        }
 
-table{
-    width:100%;
-    border-collapse:collapse;
-}
+        .countdown {
+            font-size: 54px;
+            text-align: center;
+            color: #E3001B;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
 
-table th,
-table td{
-    padding:10px;
-    border-bottom:1px solid #ddd;
-}
+        .security {
+            background: #fff8e1;
+            border-left: 8px solid #FFD900;
+            border-top: none; /* Override the red top border for this specific card */
+        }
 
-table th{
-    background:#f1f1f1;
-}
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 12px;
+            overflow: hidden; /* Keeps the rounded corners on the header */
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
 
-.buttons{
-    margin-top:20px;
-}
+        table th, table td {
+            padding: 12px;
+            text-align: left;
+        }
 
-.buttons a,
-.buttons button{
+        table th {
+            background: #00A0E9;
+            color: white;
+        }
 
-    text-decoration:none;
-    color:white;
-    padding:12px 18px;
-    border:none;
-    border-radius:6px;
-    margin-right:10px;
-    cursor:pointer;
-    display:inline-block;
-    font-weight:bold;
+        table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        table tr:hover {
+            background: #e6f7ff;
+        }
 
-}
+        /* Themed Buttons */
+        .buttons {
+            margin-top: 30px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
 
-.start{
-    background:#28a745;
-}
+        .buttons a, .buttons button {
+            text-decoration: none;
+            color: white;
+            padding: 14px 22px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            font-family: inherit;
+        }
 
-.end{
-    background:#dc3545;
-}
+        .buttons a:active, .buttons button:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+        }
 
-.history{
-    background:#007bff;
-}
+        .start { background: #28a745; }
+        .start:hover { background: #218838; }
 
-.download{
-    background:#ff9800;
-}
+        .end { background: #E3001B; } /* Collar Red */
+        .end:hover { background: #c80017; }
 
-.logout{
-    background:#6c757d;
-}
+        .history { background: #FFD900; color: #333 !important; } /* Bell Yellow */
+        .history:hover { background: #e6c300; }
 
-button:disabled{
-    opacity:.5;
-    cursor:not-allowed;
-}
+        .download { background: #ff9800; }
+        .download:hover { background: #e68a00; }
 
-</style>
+        .logout { background: #455a64; }
+        .logout:hover { background: #37474f; }
 
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+    </style>
 </head>
 
 <body>
 
 <div class="container">
 
-<h1>Welcome {{ name }}</h1>
-<h3>Class Representative</h3>
-
-<div class="card">
-
-<h2>Today's Attendance</h2>
-
-<p><b>Status :</b>
-<span id="status" class="status-closed">Loading...</span>
-</p>
-
-<br>
-
-<p><b>Subject :</b>
-<span id="subject">-</span>
-</p>
-
-<br>
-
-<p><b>Period :</b>
-<span id="period">-</span>
-</p>
-
-<br>
-
-<p><b>Attendance Code :</b>
-<span id="code">-</span>
-</p>
-
-<br>
-
-<p>
-<b>Present :</b>
-
-<span id="present">0</span>
-
-/
-
-<span id="total">0</span>
-
-</p>
-
-<br>
-
-<p>
-
-<b>Absent :</b>
-
-<span id="absent">0</span>
-
-</p>
-
-</div>
-
-<div class="card">
-
-<h2>⏳ Time Remaining</h2>
-
-<div
-id="countdown"
-class="countdown">
-
-00:00
-
-</div>
-
-</div>
-
-<div class="card security">
-
-<h2>🛡 Security Monitor</h2>
-
-<div id="securityStatus">
-
-Checking...
-
-</div>
-
-</div>
-
-<div class="card">
-
-<h2>Recent Attendance</h2>
-
-<p id="noAttendance">
-
-No attendance submitted.
-
-</p>
-
-<table
-id="attendanceTable"
-style="display:none;">
-
-<thead>
-
-<tr>
-
-<th>Student</th>
-
-<th>Time</th>
-
-<th>IP Address</th>
-
-</tr>
-
-</thead>
-
-<tbody id="recentTable">
-
-</tbody>
-
-</table>
-
-</div>
-
-<div class="buttons">
-
-<a
-href="/start"
-class="start"
-id="startButton">
-
-Start Attendance
-
-</a>
-
-<button
-class="end"
-id="endButton">
-
-End Attendance
-
-</button>
-
-<a
-href="/history"
-class="history">
-
-Session History
-
-</a>
-
-<a
-href="/download_absentees"
-class="download">
-
-Download Absentees
-
-</a>
-
-<a
-href="/"
-class="logout">
-
-Logout
-
-</a>
-
-</div>
+    <h1 class="header-title">Welcome {{ name }}</h1>
+    <h3 class="header-subtitle">Class Representative Dashboard</h3>
+
+    <div class="card first-card">
+        <!-- Doraemon Bell -->
+        <div class="bell">
+            <div class="bell-line"></div>
+        </div>
+
+        <h2>Today's Attendance</h2>
+
+        <div class="details-grid">
+            <p><b>Status :</b> <span id="status" class="status-closed">Loading...</span></p>
+            <p><b>Attendance Code :</b> <span id="code" style="font-size: 1.2em; color: #00A0E9; font-weight: bold;">-</span></p>
+            <p><b>Subject :</b> <span id="subject">-</span></p>
+            <p><b>Period :</b> <span id="period">-</span></p>
+            <p><b>Present :</b> <span id="present" style="color: #28a745; font-weight: bold;">0</span> / <span id="total">0</span></p>
+            <p><b>Absent :</b> <span id="absent" style="color: #E3001B; font-weight: bold;">0</span></p>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>⏳ Time Remaining</h2>
+        <div id="countdown" class="countdown">00:00</div>
+    </div>
+
+    <div class="card security">
+        <h2 style="color: #d4a000; border-bottom: 2px dashed #ffeeba;">🛡 Security Monitor</h2>
+        <div id="securityStatus">Checking...</div>
+    </div>
+
+    <div class="card">
+        <h2>Recent Attendance</h2>
+        <p id="noAttendance" style="color: #777; font-style: italic;">No attendance submitted.</p>
+
+        <table id="attendanceTable" style="display:none;">
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Time</th>
+                    <th>IP Address</th>
+                </tr>
+            </thead>
+            <tbody id="recentTable">
+            </tbody>
+        </table>
+    </div>
+
+    <div class="buttons">
+        <a href="/start" class="start" id="startButton">Start Attendance</a>
+        <button class="end" id="endButton">End Attendance</button>
+        <a href="/history" class="history">Session History</a>
+        <a href="/download_absentees" class="download">Download Absentees</a>
+        <a href="/" class="logout">Logout</a>
+    </div>
 
 </div>
 
 <script>
-
 //==============================
-// Global Variables
+// Global Variables (Timezone Safe)
 //==============================
-
 let attendanceClosed = true;
-let endTimeUTC = null; // Store the exact UTC end time string from the server
+let endTimeUTC = null; 
 
 //==============================
 // Load Dashboard
 //==============================
-
 function loadDashboard(){
-
     fetch("/dashboard_data")
     .then(response => response.json())
     .then(data => {
-
         if(!data.active){
             updateClosedUI();
             return;
         }
-
         updateOpenUI(data);
-
     });
-
 }
 
 //==============================
 // OPEN Attendance UI
 //==============================
-
 function updateOpenUI(data){
-
     attendanceClosed = false;
     
-    // Store the exact ISO string instead of raw seconds
+    // Store the exact ISO string from the UTC server
     endTimeUTC = data.end_time_iso; 
 
     document.getElementById("status").innerHTML = "🟢 OPEN";
@@ -353,46 +339,34 @@ function updateOpenUI(data){
     document.getElementById("endButton").style.opacity = "1";
 
     // Security Monitor
-
     let security = "";
-
     if(data.suspicious.length > 0){
-
         data.suspicious.forEach(function(item){
-
             security += `
-            <div style="margin-bottom:10px;">
+            <div style="margin-bottom:10px; color: #E3001B;">
                 ⚠️ <b>Suspicious Activity Detected</b><br>
                 <b>IP :</b> ${item[0]}<br>
                 <b>Students :</b> ${item[2]}<br>
                 <b>Total :</b> ${item[1]}
             </div>
-            <hr>
+            <hr style="border-top: 1px dashed #ccc; margin: 10px 0;">
             `;
-
         });
-
+    } else {
+        security = "<span style='color: #28a745; font-weight: bold;'>✅ No suspicious activity detected.</span>";
     }
-    else{
-        security = "✅ No suspicious activity detected.";
-    }
-
     document.getElementById("securityStatus").innerHTML = security;
 
     // Recent Attendance
-
     let rows = "";
-
     data.recent.forEach(function(student){
-
         rows += `
         <tr>
-            <td>${student[0]}</td>
+            <td><strong>${student[0]}</strong></td>
             <td>${student[1]}</td>
             <td>${student[2]}</td>
         </tr>
         `;
-
     });
 
     document.getElementById("recentTable").innerHTML = rows;
@@ -400,20 +374,16 @@ function updateOpenUI(data){
     if(data.recent.length > 0){
         document.getElementById("attendanceTable").style.display = "table";
         document.getElementById("noAttendance").style.display = "none";
-    }
-    else{
+    } else {
         document.getElementById("attendanceTable").style.display = "none";
         document.getElementById("noAttendance").style.display = "block";
     }
-
 }
 
 //==============================
 // CLOSED Attendance UI
 //==============================
-
 function updateClosedUI(){
-
     attendanceClosed = true;
     endTimeUTC = null;
 
@@ -430,8 +400,8 @@ function updateClosedUI(){
 
     document.getElementById("countdown").innerHTML = "00:00";
 
-    document.getElementById("securityStatus").innerHTML =
-        "Attendance session has been closed.";
+    document.getElementById("securityStatus").innerHTML = "Attendance session has been closed.";
+    document.getElementById("securityStatus").style.color = "#777";
 
     document.getElementById("attendanceTable").style.display = "none";
     document.getElementById("noAttendance").style.display = "block";
@@ -441,15 +411,12 @@ function updateClosedUI(){
 
     document.getElementById("endButton").disabled = true;
     document.getElementById("endButton").style.opacity = "0.5";
-
 }
 
 //==============================
 // Countdown Timer (Timezone Aware)
 //==============================
-
 function updateCountdown(){
-
     if(attendanceClosed || !endTimeUTC){
         document.getElementById("countdown").innerHTML = "00:00";
         return;
@@ -458,10 +425,10 @@ function updateCountdown(){
     // Get the local browser time
     let now = new Date().getTime();
     
-    // Parse the server's UTC time (JavaScript automatically converts this to your local timezone)
+    // Parse the server's UTC time
     let targetTime = new Date(endTimeUTC).getTime();
     
-    // Calculate difference in milliseconds
+    // Calculate difference
     let distance = targetTime - now;
 
     if(distance <= 0){
@@ -474,7 +441,6 @@ function updateCountdown(){
             updateClosedUI();
             loadDashboard();
         });
-
         return;
     }
 
@@ -482,24 +448,16 @@ function updateCountdown(){
     let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
     let seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-    // Format display
     document.getElementById("countdown").innerHTML =
-        String(minutes).padStart(2,"0")
-        + ":"
-        + String(seconds).padStart(2,"0");
+        String(minutes).padStart(2,"0") + ":" + String(seconds).padStart(2,"0");
 }
-
 
 //==============================
 // End Attendance Button
 //==============================
-
 document.getElementById("endButton").addEventListener("click", function(e){
-
     e.preventDefault();
-
-    if(attendanceClosed)
-        return;
+    if(attendanceClosed) return;
 
     fetch("/close_attendance")
     .then(response => response.json())
@@ -507,24 +465,19 @@ document.getElementById("endButton").addEventListener("click", function(e){
         updateClosedUI();
         loadDashboard();
     });
-
 });
 
-
 //==============================
-// Initial Load
+// Initialization
 //==============================
-
 loadDashboard();
 
-
-// Refresh dashboard every 5 seconds
+// Poll for data every 5 seconds
 setInterval(function(){
     loadDashboard();
 }, 5000);
 
-
-// Countdown every second
+// Tick countdown every second
 setInterval(function(){
     updateCountdown();
 }, 1000);
