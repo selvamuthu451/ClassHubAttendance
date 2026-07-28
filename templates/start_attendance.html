@@ -1,80 +1,268 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Start Attendance</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial Rounded MT Bold', 'Comic Sans MS', Arial, sans-serif;
+            background: linear-gradient(135deg, #00A0E9 0%, #66c7f4 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .card {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            border-top: 12px solid #E3001B; /* Collar Red */
+            position: relative;
+        }
+
+        /* Doraemon Bell */
+        .bell {
+            width: 45px;
+            height: 45px;
+            background: #FFD900;
+            border-radius: 50%;
+            border: 2px solid #333;
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .bell::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 3px;
+            background: #333;
+            top: 12px;
+            left: 0;
+        }
+        .bell::after {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #333;
+            border-radius: 50%;
+            top: 22px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .bell-line {
+            position: absolute;
+            width: 3px;
+            height: 12px;
+            background: #333;
+            top: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        h1 {
+            color: #00A0E9;
+            margin-bottom: 25px;
+            font-size: 26px;
+            text-align: center;
+        }
+
+        /* Alert Banners */
+        .alert-lab {
+            background-color: #e6f7ff;
+            color: #0050b3;
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 2px solid #91d5ff;
+            font-size: 14px;
+        }
+
+        .alert-success {
+            background-color: #f6ffed;
+            color: #389e0d;
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 2px solid #b7eb8f;
+            font-size: 14px;
+        }
+
+        .alert-warning {
+            background-color: #fffbe6;
+            color: #d48806;
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 2px solid #ffe58f;
+            font-size: 14px;
+        }
+
+        /* Form Controls */
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            background: white;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #00A0E9;
+            box-shadow: 0 0 8px rgba(0, 160, 233, 0.3);
+        }
+
+        #batchContainer {
+            background: #f0f9ff;
+            padding: 15px;
+            border-left: 6px solid #00A0E9;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .submit-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            font-size: 18px;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: background 0.3s;
+            box-shadow: 0 4px 6px rgba(40, 167, 69, 0.3);
+            font-family: inherit;
+        }
+
+        .submit-btn:hover {
+            background: #218838;
+        }
+
+        .error-msg {
+            color: #E3001B;
+            font-weight: bold;
+            margin-top: 15px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
 
-<h1>Start Attendance</h1>
+<div class="container">
+    <div class="card">
+        <!-- Bell Element -->
+        <div class="bell">
+            <div class="bell-line"></div>
+        </div>
 
-{% if auto_subject == 'MONDAY_LAB' or auto_subject == 'FRIDAY_LAB' %}
-    <div style="background-color: #d1ecf1; color: #0c5460; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #bee5eb;">
-        <strong>🧪 Lab Session Auto-Detected!</strong><br>
-        The timetable shows a split lab right now. When you select <b>Batch 1</b> or <b>Batch 2</b> below, the <b>Subject Code</b> will automatically update to the correct course!
+        <h1>Start Attendance</h1>
+
+        {% if auto_subject == 'MONDAY_LAB' or auto_subject == 'FRIDAY_LAB' %}
+            <div class="alert-lab">
+                <strong>🧪 Lab Session Auto-Detected!</strong><br>
+                Select Batch 1 or Batch 2 below to lock the correct course code.
+            </div>
+        {% elif auto_subject %}
+            <div class="alert-success">
+                <strong>✅ Class Auto-Detected:</strong> {{ auto_subject }} (Period {{ auto_period }})
+            </div>
+        {% else %}
+            <div class="alert-warning">
+                ⚠ No active class scheduled right now. Select manually if needed.
+            </div>
+        {% endif %}
+
+        <form method="POST">
+
+            <div class="form-group">
+                <label>Subject</label>
+                <select name="subject" id="subjectSelect">
+                    <option value="MAT201R01 - Engineering Mathematics - III">MAT201R01 - Engineering Mathematics - III</option>
+                    <option value="CSE105 - Computer Organization">CSE105 - Computer Organization</option>
+                    <option value="CSE208 - Java Programming">CSE208 - Java Programming</option>
+                    <option value="CSE103R01 - Data Structures">CSE103R01 - Data Structures</option>
+                    <option value="ECE101R01 - Digital System Design">ECE101R01 - Digital System Design</option>
+                    <option value="CSE104R01 - Data Structures Lab">CSE104R01 - Data Structures Lab</option>
+                    <option value="ECE103 - Digital System Design Lab">ECE103 - Digital System Design Lab</option>
+                    <option value="CSE208 JAVA LAB">CSE208 JAVA LAB</option>
+                </select>
+            </div>
+
+            <div id="batchContainer" style="display:none;">
+                <label style="color: #00A0E9;">Batch (For Lab Sessions)</label>
+                <select name="batch" id="batchSelect" style="margin-top: 5px;">
+                    <option value="All">All Students (Theory)</option>
+                    <option value="Batch 1">Batch 1 (First 30 Students)</option>
+                    <option value="Batch 2">Batch 2 (Remaining Students)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Period</label>
+                <select name="period" id="periodSelect">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Duration</label>
+                <select name="duration">
+                    <option>1</option>
+                    <option selected>2</option>
+                    <option>3</option>
+                    <option>5</option>
+                </select>
+            </div>
+
+            <input type="submit" value="Generate Attendance" class="submit-btn">
+        </form>
+
+        {% if error %}
+            <p class="error-msg">{{ error }}</p>
+        {% endif %}
     </div>
-{% elif auto_subject %}
-    <div style="background-color: #d4edda; color: #155724; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #c3e6cb;">
-        <strong>✅ Class Auto-Detected:</strong> {{ auto_subject }} (Period {{ auto_period }})
-    </div>
-{% else %}
-    <div style="background-color: #fff3cd; color: #856404; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #ffeeba;">
-        ⚠ No active class scheduled right now. Select manually if needed.
-    </div>
-{% endif %}
-
-<form method="POST">
-
-<label>Subject</label><br>
-<select name="subject" id="subjectSelect">
-    <option value="MAT201R01 - Engineering Mathematics - III">MAT201R01 - Engineering Mathematics - III</option>
-    <option value="CSE105 - Computer Organization">CSE105 - Computer Organization</option>
-    <option value="CSE208 - Java Programming">CSE208 - Java Programming</option>
-    <option value="CSE103R01 - Data Structures">CSE103R01 - Data Structures</option>
-    <option value="ECE101R01 - Digital System Design">ECE101R01 - Digital System Design</option>
-    
-    <!-- Lab Courses -->
-    <option value="CSE104R01 - Data Structures Lab">CSE104R01 - Data Structures Lab</option>
-    <option value="ECE103 - Digital System Design Lab">ECE103 - Digital System Design Lab</option>
-    <option value="CSE208 JAVA LAB">CSE208 JAVA LAB</option>
-</select>
-<br><br>
-
-<div id="batchContainer" style="display:none; background: #f8f9fa; padding: 10px; border-left: 4px solid #007bff; border-radius: 4px;">
-    <label style="font-weight: bold;">Batch (For Lab Sessions)</label><br>
-    <select name="batch" id="batchSelect" style="margin-top: 5px; padding: 5px;">
-        <option value="All">All Students (Theory)</option>
-        <option value="Batch 1">Batch 1 (First 30 Students)</option>
-        <option value="Batch 2">Batch 2 (Remaining Students)</option>
-    </select>
 </div>
-<br>
-
-<label>Period</label><br>
-<select name="period" id="periodSelect">
-    <option value="1">1</option>
-    <option value="2">2</option>
-    <option value="3">3</option>
-    <option value="4">4</option>
-    <option value="6">6</option>
-    <option value="7">7</option>
-</select>
-<br><br>
-
-<label>Duration</label><br>
-<select name="duration">
-    <option>1</option>
-    <option selected>2</option>
-    <option>3</option>
-    <option>5</option>
-</select>
-<br><br>
-
-<input type="submit" value="Generate Attendance">
-</form>
-
-{% if error %}
-    <p style="color:red; white-space: pre-line; font-weight: bold;">{{ error }}</p>
-{% endif %}
 
 <script>
     const autoSubject = "{{ auto_subject }}";
@@ -85,17 +273,13 @@
     const batchContainer = document.getElementById('batchContainer');
     const periodSelect = document.getElementById('periodSelect');
 
-    // Auto-select Period
     if (autoPeriod && autoPeriod !== 'None') {
         periodSelect.value = autoPeriod;
     }
 
-    // Auto-select Subject & Setup Batch Logic
     if (autoSubject === 'MONDAY_LAB' || autoSubject === 'FRIDAY_LAB') {
         batchSelect.value = "Batch 1"; 
-        updateSplitLabSubject(); // Set initial course code based on Batch 1
-        
-        // Listen for changes. When you click Batch 2, course code changes automatically!
+        updateSplitLabSubject();
         batchSelect.addEventListener('change', updateSplitLabSubject);
         
         function updateSplitLabSubject() {
@@ -117,19 +301,18 @@
         batchSelect.value = "All";
     }
 
-    // Function to manually show/hide the Batch dropdown if the user changes subject manually
     function toggleBatchVisibility() {
         const text = subjectSelect.options[subjectSelect.selectedIndex].text.toUpperCase();
         if (text.includes("LAB")) {
             batchContainer.style.display = 'block';
         } else {
             batchContainer.style.display = 'none';
-            batchSelect.value = 'All'; // Reset to All for theory
+            batchSelect.value = 'All';
         }
     }
 
     subjectSelect.addEventListener('change', toggleBatchVisibility);
-    toggleBatchVisibility(); // Run on load to set correct UI
+    toggleBatchVisibility();
 </script>
 
 </body>

@@ -1,222 +1,229 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Session Details</title>
-<style>
-body{
-    font-family:Arial,sans-serif;
-    background:#f4f6f9;
-    margin:0;
-    padding:30px;
-}
-.container{
-    width:1200px;
-    margin:auto;
-}
-h1{
-    color:#2c3e50;
-}
-.card{
-    background:white;
-    padding:20px;
-    border-radius:10px;
-    margin-bottom:20px;
-    box-shadow:0 0 10px rgba(0,0,0,.15);
-}
-.summary{
-    display:flex;
-    justify-content:space-between;
-    gap:20px;
-}
-.box{
-    flex:1;
-    color:white;
-    text-align:center;
-    border-radius:10px;
-    padding:20px;
-}
-.total{
-    background:#007bff;
-}
-.present{
-    background:#28a745;
-}
-.absent{
-    background:#dc3545;
-}
-table{
-    width:100%;
-    border-collapse:collapse;
-}
-th{
-    background:#007bff;
-    color:white;
-}
-th,td{
-    border:1px solid #ddd;
-    padding:10px;
-    text-align:center;
-}
-input{
-    width:300px;
-    padding:10px;
-    margin-bottom:20px;
-    font-size:16px;
-}
-.back{
-    display:inline-block;
-    margin-top:20px;
-    padding:12px 20px;
-    color:white;
-    background:#6c757d;
-    text-decoration:none;
-    border-radius:6px;
-}
-.download{
-    display:inline-block;
-    margin-top:20px;
-    margin-left:10px;
-    padding:12px 20px;
-    color:white;
-    background:#ff9800;
-    text-decoration:none;
-    border-radius:6px;
-}
-.security{
-    background:#fff8e1;
-    border-left:6px solid orange;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Session Details</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial Rounded MT Bold', 'Comic Sans MS', Arial, sans-serif;
+            background: linear-gradient(135deg, #00A0E9 0%, #66c7f4 100%);
+            padding: 30px;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .card {
+            background: white;
+            padding: 35px;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            border-top: 12px solid #E3001B; /* Collar Red */
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        /* Doraemon Bell */
+        .bell {
+            width: 45px;
+            height: 45px;
+            background: #FFD900;
+            border-radius: 50%;
+            border: 2px solid #333;
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .bell::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 3px;
+            background: #333;
+            top: 12px;
+            left: 0;
+        }
+        .bell::after {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #333;
+            border-radius: 50%;
+            top: 22px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .bell-line {
+            position: absolute;
+            width: 3px;
+            height: 12px;
+            background: #333;
+            top: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        h2 {
+            color: #00A0E9;
+            margin-bottom: 20px;
+            font-size: 26px;
+            border-bottom: 2px dashed #66c7f4;
+            padding-bottom: 10px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            font-size: 16px;
+            margin-bottom: 25px;
+            color: #444;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+
+        th {
+            background: #00A0E9;
+            color: white;
+            padding: 14px;
+            font-size: 15px;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            text-align: center;
+            color: #444;
+            font-size: 14px;
+        }
+
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        tr:hover {
+            background: #e6f7ff;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            text-decoration: none;
+            padding: 12px 22px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background 0.2s;
+            color: white;
+        }
+
+        .download-btn {
+            background: #ff9800;
+        }
+        .download-btn:hover {
+            background: #e68a00;
+        }
+
+        .back-btn {
+            background: #455a64;
+        }
+        .back-btn:hover {
+            background: #37474f;
+        }
+    </style>
 </head>
 <body>
 
 <div class="container">
-<h1>Attendance Session Details</h1>
+    <div class="card">
+        <!-- Bell Element -->
+        <div class="bell">
+            <div class="bell-line"></div>
+        </div>
 
-<div class="card">
-<h2>{{ session[0] }}</h2>
-<p><b>Period :</b> {{ session[1] }}</p>
-<p><b>Date :</b> {{ session[2] }}</p>
-<p><b>Start :</b> <span class="utc-time">{{ session[3] }}</span></p>
-<p><b>End :</b> <span class="utc-time">{{ session[4] }}</span></p>
-<p><b>Status :</b> {{ session[5] }}</p>
-</div>
+        <h2>Session #{{ session[0] }} Details</h2>
 
-<div class="summary">
-<div class="box total">
-<h2>Total Students</h2>
-<h1>{{ total }}</h1>
-</div>
-<div class="box present">
-<h2>Present</h2>
-<h1>{{ present }}</h1>
-</div>
-<div class="box absent">
-<h2>Absent</h2>
-<h1>{{ absent }}</h1>
-</div>
-</div>
+        <div class="info-grid">
+            <p><b>Subject:</b> {{ session[1] }}</p>
+            <p><b>Period:</b> {{ session[2] }}</p>
+            <p><b>Date:</b> {{ session[3] }}</p>
+            <p><b>Attendance Code:</b> <span style="color: #00A0E9; font-weight: bold;">{{ session[4] }}</span></p>
+            <p><b>Status:</b> 
+                {% if session[5] == 'OPEN' %}
+                    <span style="color: #28a745; font-weight: bold;">OPEN</span>
+                {% else %}
+                    <span style="color: #E3001B; font-weight: bold;">CLOSED</span>
+                {% endif %}
+            </p>
+        </div>
 
-<div class="card security">
-<h2>🛡 Security Monitor</h2>
-{% if suspicious_ips %}
-<table>
-<tr>
-<th>IP Address</th>
-<th>Students</th>
-<th>Total</th>
-<th>Status</th>
-</tr>
-{% for item in suspicious_ips %}
-<tr>
-<td>{{ item[0] }}</td>
-<td>{{ item[2] }}</td>
-<td>{{ item[1] }}</td>
-<td style="color:orange;font-weight:bold;">⚠ Needs Verification</td>
-</tr>
-{% endfor %}
-</table>
-{% else %}
-<p style="color:green;font-weight:bold;">✅ No suspicious activity detected.</p>
-{% endif %}
-<ul>
-<li>Same IP Address</li>
-<li>Same Browser</li>
-<li>Multiple submissions from same network</li>
-<li>Needs Verification</li>
-</ul>
-</div>
+        <h2>Present Students List</h2>
 
-<div class="card">
-<h2>🟢 Present Students</h2>
-<input type="text" id="search" placeholder="Search Register No or Name..." onkeyup="searchStudent()">
-<table id="presentTable">
-<tr>
-<th>Register No</th>
-<th>Name</th>
-<th>Time</th>
-<th>IP Address</th>
-</tr>
-{% for student in present_students %}
-<tr>
-<td>{{ student[0] }}</td>
-<td>{{ student[1] }}</td>
-<td><span class="utc-time">{{ student[2] }}</span></td>
-<td>{{ student[3] }}</td>
-</tr>
-{% endfor %}
-</table>
-</div>
+        {% if records %}
+        <table>
+            <tr>
+                <th>Register Number</th>
+                <th>Student Name</th>
+                <th>Submitted Time</th>
+                <th>IP Address</th>
+            </tr>
+            {% for r in records %}
+            <tr>
+                <td><b>{{ r[0] }}</b></td>
+                <td>{{ r[1] }}</td>
+                <td><span class="utc-time">{{ r[2] }}</span></td>
+                <td>{{ r[3] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+        <p style="color: #777; font-style: italic; margin-bottom: 25px;">No students have submitted attendance for this session yet.</p>
+        {% endif %}
 
-<div class="card">
-<h2>❌ Absent Students</h2>
-<table>
-<tr>
-<th>Register No</th>
-<th>Name</th>
-</tr>
-{% for student in absent_students %}
-<tr>
-<td>{{ student[0] }}</td>
-<td>{{ student[1] }}</td>
-</tr>
-{% endfor %}
-</table>
-</div>
-
-<a href="/history" class="back">← Back</a>
-<a href="/download/{{ session_id }}" class="download">📥 Download Excel</a>
+        <div class="btn-group">
+            <a href="/download/{{ session[0] }}" class="btn download-btn">📥 Download Excel Report</a>
+            <a href="/history" class="btn back-btn">← Back to History</a>
+        </div>
+    </div>
 </div>
 
 <script>
-function searchStudent(){
-    let input=document.getElementById("search");
-    let filter=input.value.toUpperCase();
-    let table=document.getElementById("presentTable");
-    let tr=table.getElementsByTagName("tr");
-    for(let i=1;i<tr.length;i++){
-        let td1=tr[i].getElementsByTagName("td")[0];
-        let td2=tr[i].getElementsByTagName("td")[1];
-        if(td1||td2){
-            let txt=(td1.innerHTML+" "+td2.innerHTML).toUpperCase();
-            if(txt.indexOf(filter)>-1)
-                tr[i].style.display="";
-            else
-                tr[i].style.display="none";
+    // Convert server UTC timestamps to local browser time
+    document.querySelectorAll('.utc-time').forEach(el => {
+        let timeStr = el.innerText.trim();
+        if(timeStr && timeStr !== 'None' && timeStr !== '-') {
+            let dateObj = new Date(timeStr.replace(' ', 'T') + 'Z');
+            if(!isNaN(dateObj)) {
+                el.innerText = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }); 
+            }
         }
-    }
-}
-
-// Convert server UTC time to Local Time
-document.querySelectorAll('.utc-time').forEach(el => {
-    let timeStr = el.innerText.trim();
-    if(timeStr && timeStr !== 'None' && timeStr !== '-') {
-        let dateObj = new Date(timeStr.replace(' ', 'T') + 'Z');
-        if(!isNaN(dateObj)) {
-            el.innerText = dateObj.toLocaleString(); 
-        }
-    }
-});
+    });
 </script>
 
 </body>

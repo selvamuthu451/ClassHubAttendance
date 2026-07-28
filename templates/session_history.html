@@ -1,93 +1,210 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Session History</title>
-<style>
-body{
-    font-family:Arial;
-    background:#f4f6f9;
-    padding:30px;
-}
-.container{
-    width:1100px;
-    margin:auto;
-}
-.card{
-    background:white;
-    padding:20px;
-    border-radius:10px;
-    box-shadow:0 0 10px rgba(0,0,0,.15);
-}
-table{
-    width:100%;
-    border-collapse:collapse;
-}
-th{
-    background:#007bff;
-    color:white;
-}
-th,td{
-    padding:12px;
-    border:1px solid #ddd;
-    text-align:center;
-}
-a{
-    text-decoration:none;
-}
-.back{
-    display:inline-block;
-    margin-top:20px;
-    background:#6c757d;
-    color:white;
-    padding:10px 20px;
-    border-radius:5px;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Session History</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial Rounded MT Bold', 'Comic Sans MS', Arial, sans-serif;
+            background: linear-gradient(135deg, #00A0E9 0%, #66c7f4 100%);
+            padding: 30px;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            margin: auto;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            border-top: 12px solid #E3001B;
+            position: relative;
+        }
+
+        .bell {
+            width: 45px;
+            height: 45px;
+            background: #FFD900;
+            border-radius: 50%;
+            border: 2px solid #333;
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .bell::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 3px;
+            background: #333;
+            top: 12px;
+            left: 0;
+        }
+        .bell::after {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #333;
+            border-radius: 50%;
+            top: 22px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .bell-line {
+            position: absolute;
+            width: 3px;
+            height: 12px;
+            background: #333;
+            top: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        h2 {
+            color: #00A0E9;
+            margin-bottom: 25px;
+            font-size: 26px;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+
+        th {
+            background: #00A0E9;
+            color: white;
+            padding: 14px;
+            font-size: 15px;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            text-align: center;
+            color: #444;
+            font-size: 14px;
+        }
+
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        tr:hover {
+            background: #e6f7ff;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .view-btn {
+            background: #00A0E9;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-weight: bold;
+            display: inline-block;
+            transition: background 0.2s;
+        }
+
+        .view-btn:hover {
+            background: #0088c7;
+        }
+
+        .back {
+            display: inline-block;
+            background: #455a64;
+            color: white;
+            padding: 12px 22px;
+            border-radius: 12px;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background 0.2s;
+        }
+
+        .back:hover {
+            background: #37474f;
+        }
+    </style>
 </head>
 <body>
 
 <div class="container">
-<div class="card">
-<h2>Attendance Session History</h2>
-<table>
-<tr>
-<th>ID</th>
-<th>Date</th>
-<th>Subject</th>
-<th>Period</th>
-<th>Start</th>
-<th>End</th>
-<th>Status</th>
-<th>Action</th>
-</tr>
-{% for s in sessions %}
-<tr>
-<td>{{ s[0] }}</td>
-<td>{{ s[1] }}</td>
-<td>{{ s[2] }}</td>
-<td>{{ s[3] }}</td>
-<td><span class="utc-time">{{ s[4] }}</span></td>
-<td><span class="utc-time">{{ s[5] }}</span></td>
-<td>{{ s[6] }}</td>
-<td>
-<a href="/session/{{ s[0] }}">View</a>
-</td>
-</tr>
-{% endfor %}
-</table>
-<a href="/" class="back">← Back to Dashboard</a>
-</div>
+    <div class="card">
+        <!-- Bell Element -->
+        <div class="bell">
+            <div class="bell-line"></div>
+        </div>
+
+        <h2>Attendance Session History</h2>
+
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Date</th>
+                <th>Subject</th>
+                <th>Period</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+
+            {% for s in sessions %}
+            <tr>
+                <td><b>{{ s[0] }}</b></td>
+                <td>{{ s[1] }}</td>
+                <td>{{ s[2] }}</td>
+                <td>{{ s[3] }}</td>
+                <td><span class="utc-time">{{ s[4] }}</span></td>
+                <td><span class="utc-time">{{ s[5] }}</span></td>
+                <td>
+                    {% if s[6] == 'OPEN' %}
+                        <span style="color: #28a745; font-weight: bold;">OPEN</span>
+                    {% else %}
+                        <span style="color: #E3001B; font-weight: bold;">CLOSED</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="/session/{{ s[0] }}" class="view-btn">View</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <a href="/" class="back">← Back to Dashboard</a>
+    </div>
 </div>
 
 <script>
-    // Convert server UTC time to Local Time
+    // Convert server UTC timestamps to local browser timezone
     document.querySelectorAll('.utc-time').forEach(el => {
         let timeStr = el.innerText.trim();
         if(timeStr && timeStr !== 'None' && timeStr !== '-') {
-            // Replace space with T and append Z to force JS to read as UTC
             let dateObj = new Date(timeStr.replace(' ', 'T') + 'Z');
             if(!isNaN(dateObj)) {
-                el.innerText = dateObj.toLocaleString(); 
+                el.innerText = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); 
             }
         }
     });
