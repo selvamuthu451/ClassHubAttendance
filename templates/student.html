@@ -81,7 +81,7 @@
             margin-bottom: 8px;
         }
 
-        .form-group input {
+        .form-group input[type="text"] {
             width: 100%;
             padding: 12px 15px;
             border: 1px solid #ccc;
@@ -90,12 +90,13 @@
             transition: border-color 0.3s;
         }
 
-        .form-group input:focus {
+        .form-group input[type="text"]:focus {
             outline: none;
             border-color: #007bff;
             box-shadow: 0 0 5px rgba(0,123,255,0.2);
         }
 
+        /* Submit Button (Disabled by default) */
         .submit-btn {
             background: #28a745;
             color: white;
@@ -103,14 +104,20 @@
             padding: 14px 20px;
             font-size: 18px;
             border-radius: 6px;
-            cursor: pointer;
             width: 100%;
             font-weight: bold;
             margin-top: 10px;
-            transition: background 0.3s;
+            transition: all 0.3s;
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
-        .submit-btn:hover {
+        .submit-btn.enabled {
+            opacity: 1;
+            cursor: pointer;
+        }
+
+        .submit-btn.enabled:hover {
             background: #218838;
         }
 
@@ -133,6 +140,14 @@
             background-color: #f8d7da;
             color: #721c24;
             border: 1px solid #f5c6cb;
+        }
+
+        .location-status {
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: -10px;
+            margin-bottom: 20px;
+            color: #ff9800;
         }
     </style>
 </head>
@@ -161,8 +176,14 @@
                     <label>Attendance Code</label>
                     <input type="text" name="attendance_code" placeholder="Enter 8-digit code" required autocomplete="off">
                 </div>
+                
+                <!-- Geolocation Status Display -->
+                <div id="locationStatus" class="location-status">
+                    📍 Requesting location access...
+                </div>
 
-                <input type="submit" value="Submit Attendance" class="submit-btn">
+                <!-- Button is disabled until location is verified -->
+                <input type="submit" id="submitBtn" value="Submit Attendance" class="submit-btn" disabled>
             </form>
 
             <!-- Server Response Message -->
@@ -175,5 +196,59 @@
 
     </div>
 
+    <script>
+        // Target Coordinates for SASTRA SRC Kumbakonam Campus
+        const TARGET_LAT = 10.9602; 
+        const TARGET_LNG = 79.3861; 
+        const ALLOWED_RADIUS = 50; // Strict 50-meter radius
+
+        const submitBtn = document.getElementById('submitBtn');
+        const locationStatus = document.getElementById('locationStatus');
+
+        // Haversine formula to calculate distance between two coordinates in meters
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371e3; 
+            const radLat1 = lat1 * Math.PI / 180;
+            const radLat2 = lat2 * Math.PI / 180;
+            const deltaLat = (lat2 - lat1) * Math.PI / 180;
+            const deltaLon = (lon2 - lon1) * Math.PI / 180;
+
+            const a = Math.sin(deltaLat/2) * Math.sin(deltaLat/2) +
+                      Math.cos(radLat1) * Math.cos(radLat2) *
+                      Math.sin(deltaLon/2) * Math.sin(deltaLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c; 
+        }
+
+        // Check if browser supports geolocation
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const userLat = position.coords.latitude;
+                    const userLng = position.coords.longitude;
+                    
+                    const distance = calculateDistance(userLat, userLng, TARGET_LAT, TARGET_LNG);
+
+                    if (distance <= ALLOWED_RADIUS) {
+                        locationStatus.innerHTML = "✅ Campus location verified!";
+                        locationStatus.style.color = "green";
+                        submitBtn.disabled = false;
+                        submitBtn.classList.add("enabled");
+                    } else {
+                        locationStatus.innerHTML = `❌ You must be on campus to submit. (${Math.round(distance)} meters away)`;
+                        locationStatus.style.color = "red";
+                    }
+                },
+                (error) => {
+                    locationStatus.innerHTML = "❌ Location access denied. You must allow GPS access to submit attendance.";
+                    locationStatus.style.color = "red";
+                },
+                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+            );
+        } else {
+            locationStatus.innerHTML = "❌ GPS is not supported by your browser.";
+            locationStatus.style.color = "red";
+        }
+    </script>
 </body>
 </html>
