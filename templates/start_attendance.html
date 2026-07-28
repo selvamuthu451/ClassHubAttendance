@@ -1,69 +1,62 @@
 <!DOCTYPE html>
-
 <html>
-
 <head>
     <title>Start Attendance</title>
 </head>
-
 <body>
 
 <h1>Start Attendance</h1>
 
+{% if auto_subject %}
+    <p style="color: green; font-weight: bold;">
+        ✅ Current Class Auto-Detected: {{ auto_subject }} (Period {{ auto_period }})
+    </p>
+{% else %}
+    <p style="color: orange;">
+        ⚠ No active class scheduled right now. Select manually if needed.
+    </p>
+{% endif %}
+
 <form method="POST">
 
 <label>Subject</label><br>
-
 <select name="subject">
-
-<option>Computer Organization</option>
-
-<option>Java</option>
-
-<option>Data Structures</option>
-
-<option>Operating Systems</option>
-
-<option>Mathematics</option>
-
+    <option value="MAT201R01 - Engineering Mathematics - III" {% if auto_subject == 'MAT201R01 - Engineering Mathematics - III' %}selected{% endif %}>MAT201R01 - Engineering Mathematics - III</option>
+    <option value="CSE105 - Computer Organization" {% if auto_subject == 'CSE105 - Computer Organization' %}selected{% endif %}>CSE105 - Computer Organization</option>
+    <option value="CSE208 - Java Programming" {% if auto_subject == 'CSE208 - Java Programming' %}selected{% endif %}>CSE208 - Java Programming</option>
+    <option value="CSE103R01 - Data Structures" {% if auto_subject == 'CSE103R01 - Data Structures' %}selected{% endif %}>CSE103R01 - Data Structures</option>
+    <option value="ECE101R01 - Digital System Design" {% if auto_subject == 'ECE101R01 - Digital System Design' %}selected{% endif %}>ECE101R01 - Digital System Design</option>
+    <option value="CSE104R01 / ECE103 LAB" {% if auto_subject == 'CSE104R01 / ECE103 LAB' %}selected{% endif %}>CSE104R01 / ECE103 LAB</option>
+    <option value="CSE208 JAVA LAB" {% if auto_subject == 'CSE208 JAVA LAB' %}selected{% endif %}>CSE208 JAVA LAB</option>
 </select>
-
 <br><br>
 
 <label>Period</label><br>
-
 <select name="period">
-
-<option>1</option>
-<option>2</option>
-<option>3</option>
-<option>4</option>
-<option>5</option>
-<option>6</option>
-<option>7</option>
-<option>8</option>
-
+    <option value="1" {% if auto_period == '1' %}selected{% endif %}>1</option>
+    <option value="2" {% if auto_period == '2' %}selected{% endif %}>2</option>
+    <option value="3" {% if auto_period == '3' %}selected{% endif %}>3</option>
+    <option value="4" {% if auto_period == '4' %}selected{% endif %}>4</option>
+    <option value="6" {% if auto_period == '6' %}selected{% endif %}>6</option>
+    <option value="7" {% if auto_period == '7' %}selected{% endif %}>7</option>
 </select>
-
 <br><br>
 
 <label>Duration</label><br>
-
 <select name="duration">
-
-<option>1</option>
-<option selected>2</option>
-<option>3</option>
-<option>5</option>
-
+    <option>1</option>
+    <option selected>2</option>
+    <option>3</option>
+    <option>5</option>
 </select>
-
 <br><br>
 
 <input type="submit" value="Generate Attendance">
-
 </form>
 
-</body>
+{% if error %}
+    <p style="color:red; white-space: pre-line;">{{ error }}</p>
+{% endif %}
 
+</body>
 </html>

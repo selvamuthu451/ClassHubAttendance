@@ -12,6 +12,100 @@ from database import get_connection
 from openpyxl import Workbook
 import random
 import string
+from datetime import datetime, timedelta, timezone
+
+# Helper function to get the current active class based on IST
+def get_current_class():
+    # Set time to IST (UTC + 5:30)
+    ist_timezone = timezone(timedelta(hours=5, minutes=30))
+    now = datetime.now(ist_timezone)
+    
+    weekday = now.weekday() # 0 = Monday, 6 = Sunday
+    current_minutes = now.hour * 60 + now.minute
+    
+    # Timetable Matrix (Start Hour, Start Min, End Hour, End Min): (Subject, Period)
+    timetable = {
+        0: { # Monday
+            (8, 45, 10, 45): ("CSE104R01 / ECE103 LAB", "1"),
+            (11, 0, 12, 0): ("CSE105 - Computer Organization", "3"),
+            (12, 0, 13, 0): ("MAT201R01 - Engineering Mathematics - III", "4"),
+            (14, 0, 15, 0): ("ECE101R01 - Digital System Design", "6")
+        },
+        1: { # Tuesday
+            (8, 45, 9, 45): ("MAT201R01 - Engineering Mathematics - III", "1"),
+            (9, 45, 10, 45): ("ECE101R01 - Digital System Design", "2"),
+            (11, 0, 12, 0): ("CSE208 - Java Programming", "3"),
+            (12, 0, 13, 0): ("CSE103R01 - Data Structures", "4"),
+            (14, 0, 15, 0): ("CSE105 - Computer Organization", "6")
+        },
+        2: { # Wednesday
+            (9, 45, 10, 45): ("CSE103R01 - Data Structures", "2"),
+            (11, 0, 12, 0): ("MAT201R01 - Engineering Mathematics - III", "3"),
+            (12, 0, 13, 0): ("CSE105 - Computer Organization", "4"),
+            (14, 0, 15, 0): ("ECE101R01 - Digital System Design", "6"),
+            (15, 15, 16, 15): ("CSE208 - Java Programming", "7")
+        },
+        3: { # Thursday
+            (8, 45, 9, 45): ("MAT201R01 - Engineering Mathematics - III", "1"),
+            (9, 45, 10, 45): ("CSE105 - Computer Organization", "2"),
+            (11, 0, 12, 0): ("CSE208 - Java Programming", "3"),
+            (12, 0, 13, 0): ("ECE101R01 - Digital System Design", "4"),
+            (14, 0, 15, 0): ("CSE103R01 - Data Structures", "6"),
+            (15, 15, 17, 15): ("CSE208 JAVA LAB", "7")
+        },
+        4: { # Friday
+            (14, 0, 15, 0): ("CSE103R01 - Data Structures", "6"),
+            (15, 15, 17, 15): ("CSE104R01 / ECE103 LAB", "7")
+        }
+    }
+    
+    # ---------------------------------------------------------
+    # SATURDAY MAPPING LOGIC
+    # ---------------------------------------------------------
+    if weekday == 5: # If today is Saturday
+        today_date_str = now.strftime('%Y-%m-%d')
+        
+        # Map specific Saturday dates to their substitute weekday index
+        # Based on the SASTRA 2026-2027 Calendar
+        saturday_schedule = {
+            '2026-07-11': 0, # Monday schedule
+            '2026-07-25': 3, # Thursday schedule
+            '2026-08-08': 4, # Friday schedule
+            '2026-08-22': 0, # Monday schedule
+            '2026-09-19': 3, # Thursday schedule
+            '2026-10-10': 4, # Friday schedule
+            '2026-10-24': 3, # Thursday schedule
+            '2026-10-31': 3, # Thursday schedule
+            '2027-01-09': 4, # Friday schedule
+            '2027-01-23': 4, # Friday schedule
+            '2027-01-30': 4, # Friday schedule
+            '2027-02-13': 4, # Friday schedule
+            '2027-02-27': 4, # Friday schedule
+            '2027-03-13': 1, # Tuesday schedule
+            '2027-04-10': 2  # Wednesday schedule
+        }
+        
+        # Check if today's date exists in the mapping
+        if today_date_str in saturday_schedule:
+            # Change the target weekday to the mapped day
+            weekday = saturday_schedule[today_date_str]
+        else:
+            # If the date is not in the list, it is a normal holiday/weekend
+            return None, None
+
+    # ---------------------------------------------------------
+    
+    # Check if the current (or substituted) day has classes
+    if weekday in timetable:
+        for (start_h, start_m, end_h, end_m), (subject, period) in timetable[weekday].items():
+            start_time = start_h * 60 + start_m
+            end_time = end_h * 60 + end_m
+            
+            # If current time falls within a class slot
+            if start_time <= current_minutes <= end_time:
+                return subject, period
+                
+    return None, None
 
 app = Flask(__name__)
 
