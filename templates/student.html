@@ -195,8 +195,7 @@
             font-weight: bold;
             margin-top: -10px;
             margin-bottom: 20px;
-            color: #FFD900;
-            text-shadow: 0px 1px 1px rgba(0,0,0,0.2);
+            color: #00A0E9;
         }
     </style>
 </head>
@@ -232,7 +231,7 @@
                 </div>
                 
                 <!-- Geolocation Status Display -->
-                <div id="locationStatus" class="location-status" style="color: #00A0E9; text-shadow: none;">
+                <div id="locationStatus" class="location-status">
                     📍 Requesting location access...
                 </div>
 
@@ -254,7 +253,7 @@
         // Target Coordinates for SASTRA SRC Kumbakonam Campus
         const TARGET_LAT = 10.9602; 
         const TARGET_LNG = 79.3861; 
-        const ALLOWED_RADIUS = 50; // Strict 50-meter radius
+        const ALLOWED_RADIUS = 150; // Updated to 150-meter radius
 
         const submitBtn = document.getElementById('submitBtn');
         const locationStatus = document.getElementById('locationStatus');
