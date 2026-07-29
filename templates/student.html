@@ -253,7 +253,7 @@
         // Target Coordinates for SASTRA SRC Kumbakonam Campus
         const TARGET_LAT = 10.9602; 
         const TARGET_LNG = 79.3861; 
-        const ALLOWED_RADIUS = 150; // Updated to 150-meter radius
+        const ALLOWED_RADIUS = 150; // 150-meter radius
 
         const submitBtn = document.getElementById('submitBtn');
         const locationStatus = document.getElementById('locationStatus');
@@ -288,7 +288,8 @@
                         submitBtn.disabled = false;
                         submitBtn.classList.add("enabled");
                     } else {
-                        locationStatus.innerHTML = "❌ You must be on campus to submit.";
+                        // Restored the distance away indicator
+                        locationStatus.innerHTML = `❌ You must be on campus to submit. (${Math.round(distance)} meters away)`;
                         locationStatus.style.color = "#E3001B";
                     }
                 },
